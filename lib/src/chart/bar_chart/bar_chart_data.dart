@@ -39,11 +39,14 @@ class BarChartData extends AxisChartData with EquatableMixin {
     BarTouchData? barTouchData,
     double? maxY,
     double? minY,
+    double? maxX,
+    double? minX,
     super.baselineY,
     FlGridData? gridData,
     super.borderData,
     RangeAnnotations? rangeAnnotations,
     super.backgroundColor,
+    FlClipData? clipData,
   })  : barGroups = barGroups ?? const [],
         groupsSpace = groupsSpace ?? 16,
         alignment = alignment ?? BarChartAlignment.spaceEvenly,
@@ -60,8 +63,9 @@ class BarChartData extends AxisChartData with EquatableMixin {
           gridData: gridData ?? FlGridData(),
           rangeAnnotations: rangeAnnotations ?? RangeAnnotations(),
           touchData: barTouchData ?? BarTouchData(),
-          minX: 0,
-          maxX: 1,
+          minX: minX ?? 0,
+          maxX: maxX ?? 0,
+          clipData: clipData ?? FlClipData.none(),
           maxY: maxY ??
               BarChartHelper.calculateMaxAxisValues(barGroups ?? []).maxY,
           minY: minY ??
@@ -94,7 +98,10 @@ class BarChartData extends AxisChartData with EquatableMixin {
     double? maxY,
     double? minY,
     double? baselineY,
+    double? maxX,
+    double? minX,
     Color? backgroundColor,
+    FlClipData? clipData,
   }) {
     return BarChartData(
       barGroups: barGroups ?? this.barGroups,
@@ -109,6 +116,9 @@ class BarChartData extends AxisChartData with EquatableMixin {
       minY: minY ?? this.minY,
       baselineY: baselineY ?? this.baselineY,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      maxX: maxX ?? this.maxX,
+      minX: minX ?? this.minX,
+      clipData: clipData ?? this.clipData,
     );
   }
 
@@ -128,7 +138,10 @@ class BarChartData extends AxisChartData with EquatableMixin {
         borderData: FlBorderData.lerp(a.borderData, b.borderData, t),
         maxY: lerpDouble(a.maxY, b.maxY, t),
         minY: lerpDouble(a.minY, b.minY, t),
+        maxX: lerpDouble(a.maxX, b.maxX, t),
+        minX: lerpDouble(a.minX, b.minX, t),
         baselineY: lerpDouble(a.baselineY, b.baselineY, t),
+        clipData: b.clipData,
         backgroundColor: Color.lerp(a.backgroundColor, b.backgroundColor, t),
       );
     } else {
@@ -146,11 +159,14 @@ class BarChartData extends AxisChartData with EquatableMixin {
         barTouchData,
         maxY,
         minY,
+        maxX,
+        minX,
         baselineY,
         gridData,
         borderData,
         rangeAnnotations,
         backgroundColor,
+        clipData,
       ];
 }
 

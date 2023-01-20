@@ -56,6 +56,20 @@ class BarChartPainter extends AxisChartPainter<BarChartData> {
       return;
     }
 
+    if (data.clipData.any) {
+      canvasWrapper.saveLayer(
+        Rect.fromLTWH(
+          0,
+          -40,
+          canvasWrapper.size.width + 40,
+          canvasWrapper.size.height + 40,
+        ),
+        Paint(),
+      );
+
+      clipToBorder(canvasWrapper, holder);
+    }
+
     final groupsX = data.calculateGroupsX(canvasWrapper.size.width);
     _groupBarsPosition = calculateGroupAndBarsPosition(
       canvasWrapper.size,
@@ -64,6 +78,10 @@ class BarChartPainter extends AxisChartPainter<BarChartData> {
     );
 
     drawBars(canvasWrapper, _groupBarsPosition!, holder);
+
+    if (data.clipData.any) {
+      canvasWrapper.restore();
+    }
 
     for (var i = 0; i < targetData.barGroups.length; i++) {
       final barGroup = targetData.barGroups[i];
@@ -86,6 +104,41 @@ class BarChartPainter extends AxisChartPainter<BarChartData> {
         );
       }
     }
+  }
+
+  @visibleForTesting
+  void clipToBorder(
+    CanvasWrapper canvasWrapper,
+    PaintHolder<BarChartData> holder,
+  ) {
+    final data = holder.data;
+    final viewSize = canvasWrapper.size;
+    final clip = data.clipData;
+    final border = data.borderData.show ? data.borderData.border : null;
+
+    var left = 0.0;
+    var top = 0.0;
+    var right = viewSize.width;
+    var bottom = viewSize.height;
+
+    if (clip.left) {
+      final borderWidth = border?.left.width ?? 0;
+      left = borderWidth / 2;
+    }
+    if (clip.top) {
+      final borderWidth = border?.top.width ?? 0;
+      top = borderWidth / 2;
+    }
+    if (clip.right) {
+      final borderWidth = border?.right.width ?? 0;
+      right = viewSize.width - (borderWidth / 2);
+    }
+    if (clip.bottom) {
+      final borderWidth = border?.bottom.width ?? 0;
+      bottom = viewSize.height - (borderWidth / 2);
+    }
+
+    canvasWrapper.clipRect(Rect.fromLTRB(left, top, right, bottom));
   }
 
   /// Calculates bars position alongside group positions.
@@ -143,7 +196,7 @@ class BarChartPainter extends AxisChartPainter<BarChartData> {
             barRod.borderRadius ?? BorderRadius.circular(barRod.width / 2);
         final borderSide = barRod.borderSide;
 
-        final x = groupBarsPosition[i].barsX[j];
+        final x = groupBarsPosition[i].barsX[j] - holder.data.maxX;
 
         final left = x - widthHalf;
         final right = x + widthHalf;
@@ -559,7 +612,7 @@ class BarChartPainter extends AxisChartPainter<BarChartData> {
     for (var i = 0; i < _groupBarsPosition!.length; i++) {
       final groupBarPos = _groupBarsPosition![i];
       for (var j = 0; j < groupBarPos.barsX.length; j++) {
-        final barX = groupBarPos.barsX[j];
+        final barX = groupBarPos.barsX[j] - holder.data.maxX;
         final barWidth = targetData.barGroups[i].barRods[j].width;
         final halfBarWidth = barWidth / 2;
 

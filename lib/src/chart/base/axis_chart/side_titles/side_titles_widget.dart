@@ -127,7 +127,7 @@ class SideTitlesWidget extends StatelessWidget {
         final index = e.key;
         final xLocation = e.value;
         final xValue = barChartData.barGroups[index].x;
-        return AxisSideTitleMetaData(xValue.toDouble(), xLocation);
+        return AxisSideTitleMetaData(xValue.toDouble(), xLocation - axisMax);
       }).toList();
     } else {
       final axisValues = AxisChartHelper().iterateThroughAxis(

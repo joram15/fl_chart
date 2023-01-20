@@ -6,10 +6,11 @@ extension BarChartDataExtension on BarChartData {
     final groupsX = List<double>.filled(barGroups.length, 0);
     switch (alignment) {
       case BarChartAlignment.start:
-        var tempX = 0.0;
+        var tempX = 5.0;
         barGroups.asMap().forEach((i, group) {
           groupsX[i] = tempX + group.width / 2;
           tempX += group.width;
+          tempX += 24.0;
         });
         break;
 
