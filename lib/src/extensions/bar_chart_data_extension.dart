@@ -10,7 +10,7 @@ extension BarChartDataExtension on BarChartData {
         barGroups.asMap().forEach((i, group) {
           groupsX[i] = tempX + group.width / 2;
           tempX += group.width;
-          tempX += 24.0;
+          tempX += 40.0;
         });
         break;
 
