@@ -90,18 +90,19 @@ class BarChartPainter extends AxisChartPainter<BarChartData> {
           continue;
         }
         final barRod = barGroup.barRods[j];
-
-        drawTouchTooltip(
-          context,
-          canvasWrapper,
-          _groupBarsPosition!,
-          targetData.barTouchData.touchTooltipData,
-          barGroup,
-          i,
-          barRod,
-          j,
-          holder,
-        );
+        if ((_groupBarsPosition?.length ?? 0) > i) {
+          drawTouchTooltip(
+            context,
+            canvasWrapper,
+            _groupBarsPosition!,
+            targetData.barTouchData.touchTooltipData,
+            barGroup,
+            i,
+            barRod,
+            j,
+            holder,
+          );
+        }
       }
     }
   }
